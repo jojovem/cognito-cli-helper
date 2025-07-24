@@ -1,0 +1,44 @@
+{
+  "name": "@jojovembh/cognito-cli-helper",
+  "version": "1.0.0",
+  "description": "A CLI to easily test AWS Cognito user functionalities.",
+  "main": "dist/cli.js",
+  "types": "dist/cli.d.ts",
+  "bin": {
+    "cognito-cli": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm run clean && tsc",
+    "clean": "rm -rf dist",
+    "start": "pnpm run build && node dist/cli.js",
+    "prepublishOnly": "pnpm run build"
+  },
+  "keywords": [
+    "aws",
+    "cognito",
+    "cli",
+    "devops"
+  ],
+  "author": "Gustavo Andrade Ferreira",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.848.0",
+    "@aws-sdk/credential-providers": "^3.848.0",
+    "commander": "^14.0.0",
+    "inquirer": "^12.8.2"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "",
+    "@types/node": "^20.19.9",
+    "@types/yargs": "^17.0.33",
+    "@aws-sdk/types": "^3.840.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "yargs": "^18.0.0"
+  }
+}
