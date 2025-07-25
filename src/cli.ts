@@ -1,12 +1,13 @@
+#!/usr/bin/env node
 import {
   NotAuthorizedException,
   UsernameExistsException,
   UserNotFoundException
 } from '@aws-sdk/client-cognito-identity-provider';
-import { Command } from 'commander';
+import {Command} from 'commander';
 import inquirer from 'inquirer';
-import { CognitoService } from './services/cognito.service';
-import { ConfigService } from './services/config.service';
+import {CognitoService} from './services/cognito.service.js';
+import {ConfigService} from './services/config.service.js';
 
 const configService = new ConfigService();
 const program = new Command();
@@ -80,7 +81,7 @@ program
 .action(async (email: string) => {
   try {
     const cognitoService = await CognitoService.create();
-    const { password } = await inquirer.prompt([
+    const {password} = await inquirer.prompt([
       {
         type: 'password',
         name: 'password',
@@ -94,7 +95,7 @@ program
 
     if (response.ChallengeName === 'NEW_PASSWORD_REQUIRED' && response.Session) {
       console.log('A new password is required.');
-      const { newPassword } = await inquirer.prompt([
+      const {newPassword} = await inquirer.prompt([
         {
           type: 'password',
           name: 'newPassword',
@@ -150,9 +151,9 @@ program
 .action(async (accessToken: string) => {
   try {
     const cognitoService = await createService();
-    console.log(`Revoking access for accessToken "${accessToken}"...`);
+    console.log(`Revoking access for accessToken "${accessToken.substring(0, 10)}..."`);
     await cognitoService.logout(accessToken);
-    console.log(`✅ User "${accessToken}" invalidated successfully.`);
+    console.log(`✅ Token invalidated successfully.`);
   } catch (err: any) {
     console.error('❌ An unexpected error occurred during token invalidation:', err.message);
   }

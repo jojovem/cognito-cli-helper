@@ -4,28 +4,22 @@ import {
   AdminDeleteUserCommand,
   AdminDeleteUserCommandOutput,
   AdminUpdateUserAttributesCommand,
-  AdminUpdateUserAttributesCommandOutput,
   AuthFlowType,
   ChallengeNameType,
   CognitoIdentityProviderClient,
-  ConfirmForgotPasswordCommand,
-  ConfirmForgotPasswordCommandOutput,
   DeliveryMediumType,
-  ForgotPasswordCommand,
   GlobalSignOutCommand,
   GlobalSignOutCommandOutput,
   InitiateAuthCommand,
   InitiateAuthCommandOutput,
   RespondToAuthChallengeCommand
 } from '@aws-sdk/client-cognito-identity-provider';
-import {
-  AuthenticationResultType,
-  CodeDeliveryDetailsType
-} from '@aws-sdk/client-cognito-identity-provider/dist-types/models/models_0';
-import { fromIni } from '@aws-sdk/credential-providers';
-import { AwsCredentialIdentityProvider } from '@aws-sdk/types';
-import { createSrpSession, signSrpSession, wrapAuthChallenge, wrapInitiateAuth } from 'cognito-srp-helper';
-import { ConfigService } from './config.service';
+import {AuthenticationResultType} from '@aws-sdk/client-cognito-identity-provider/dist-types/models/models_0.js';
+import {fromIni} from '@aws-sdk/credential-providers';
+import {AwsCredentialIdentityProvider} from '@aws-sdk/types';
+import {createSrpSession, signSrpSession, wrapAuthChallenge, wrapInitiateAuth} from 'cognito-srp-helper';
+import {generateRandomPassword} from '../utils.js';
+import {ConfigService} from './config.service.js';
 
 /**
  * Wrapper around AWS Cognito identity flows.
@@ -36,12 +30,13 @@ export class CognitoService {
   private userPoolId?: string;
   private configService = new ConfigService();
 
-  constructor() {
+  private constructor(configService: ConfigService) {
+    this.configService = configService;
   }
 
-  public static async create(): Promise<CognitoService> {
-    const service = new CognitoService();
-    await service.initialize(); // Wait for the async initialization to complete
+  public static async create(configService?: ConfigService) {
+    const service = new CognitoService(configService || new ConfigService());
+    await service.initialize();
     return service;
   }
 
@@ -59,44 +54,17 @@ export class CognitoService {
 
     let credentialsProvider: AwsCredentialIdentityProvider | undefined;
 
-    // Explicitly create the credential provider if a profile is specified.
     if (config.awsProfile && config.awsProfile !== 'default') {
-      console.log(`Using AWS Profile: "${config.awsProfile}"`);
-      credentialsProvider = fromIni({ profile: config.awsProfile });
-    } else {
-      console.log('Using default AWS credential chain (environment variables or default profile).');
+      credentialsProvider = fromIni({profile: config.awsProfile});
     }
 
     this.cognitoClient = new CognitoIdentityProviderClient({
       region: config.region,
-      // Pass the created provider, or let the SDK use its default chain.
       credentials: credentialsProvider
     });
 
     this.clientId = config.clientId;
     this.userPoolId = config.userPoolId;
-  }
-
-
-  private generateRandomPassword(length: number = 12): string {
-    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
-    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numberChars = '0123456789';
-    const symbolChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-
-    const allChars = lowercaseChars + uppercaseChars + numberChars + symbolChars;
-
-    let password = '';
-    password += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
-    password += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
-    password += numberChars[Math.floor(Math.random() * numberChars.length)];
-    password += symbolChars[Math.floor(Math.random() * symbolChars.length)];
-
-    for (let i = password.length; i < length; i++) {
-      password += allChars[Math.floor(Math.random() * allChars.length)];
-    }
-
-    return password.split('').sort(() => 0.5 - Math.random()).join('');
   }
 
   /**
@@ -108,7 +76,7 @@ export class CognitoService {
   ): Promise<AdminCreateUserCommandOutput> {
 
     if (temporaryPassword == undefined) {
-      temporaryPassword = this.generateRandomPassword();
+      temporaryPassword = generateRandomPassword();
       console.log(`Generated temporary password: ${temporaryPassword}`);
     }
 
@@ -118,7 +86,7 @@ export class CognitoService {
         Username: email,
         TemporaryPassword: temporaryPassword,
         DesiredDeliveryMediums: [DeliveryMediumType.EMAIL],
-        UserAttributes: [{ Name: 'email', Value: email }]
+        UserAttributes: [{Name: 'email', Value: email}]
       })
     );
   }
@@ -133,30 +101,6 @@ export class CognitoService {
       new AdminDeleteUserCommand({
         UserPoolId: this.userPoolId,
         Username: email
-      })
-    );
-  }
-
-  /**
-   * Anonymizes a user by redacting their email address.
-   */
-  async anonymizeUser(
-    email: string
-  ): Promise<AdminUpdateUserAttributesCommandOutput> {
-    return this.cognitoClient.send(
-      new AdminUpdateUserAttributesCommand({
-        UserPoolId: this.userPoolId,
-        Username: email,
-        UserAttributes: [
-          {
-            Name: 'email',
-            Value: `redacted-${Date.now()}@example.com`
-          },
-          {
-            Name: 'email_verified',
-            Value: 'false'
-          }
-        ]
       })
     );
   }
@@ -178,7 +122,7 @@ export class CognitoService {
     const initParams = wrapInitiateAuth(srpSession, {
       ClientId: this.clientId,
       AuthFlow: AuthFlowType.USER_SRP_AUTH,
-      AuthParameters: { USERNAME: email }
+      AuthParameters: {USERNAME: email}
     });
 
     const initResp = await this.cognitoClient.send(
@@ -192,7 +136,7 @@ export class CognitoService {
         {
           ClientId: this.clientId,
           ChallengeName: ChallengeNameType.PASSWORD_VERIFIER,
-          ChallengeResponses: { USERNAME: email }
+          ChallengeResponses: {USERNAME: email}
         }
       );
       return this.cognitoClient.send(
@@ -228,44 +172,11 @@ export class CognitoService {
       new AdminUpdateUserAttributesCommand({
         UserPoolId: this.userPoolId,
         Username: email,
-        UserAttributes: [{ Name: 'email_verified', Value: 'true' }]
+        UserAttributes: [{Name: 'email_verified', Value: 'true'}]
       })
     );
 
     return resp.AuthenticationResult;
-  }
-
-  /**
-   * Sends forgot-password code to user.
-   */
-  async forgotPassword(
-    email: string
-  ): Promise<CodeDeliveryDetailsType | undefined> {
-    const resp = await this.cognitoClient.send(
-      new ForgotPasswordCommand({
-        ClientId: this.clientId,
-        Username: email
-      })
-    );
-    return resp.CodeDeliveryDetails;
-  }
-
-  /**
-   * Confirms forgot-password code and sets new password.
-   */
-  async confirmForgotPassword(
-    email: string,
-    code: string,
-    newPassword: string
-  ): Promise<ConfirmForgotPasswordCommandOutput> {
-    return this.cognitoClient.send(
-      new ConfirmForgotPasswordCommand({
-        ClientId: this.clientId,
-        Username: email,
-        ConfirmationCode: code,
-        Password: newPassword
-      })
-    );
   }
 
   /**
