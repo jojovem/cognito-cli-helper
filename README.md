@@ -24,7 +24,7 @@
 
 Enter region, userPoolId, clientId, and optionally awsProfile.
 
-The file will be created on:`~/.config/congito-cli-helper/config.json`
+The file will be created on:`~/.config/cognito-cli-helper/config.json`
 
 ## Usage
 
