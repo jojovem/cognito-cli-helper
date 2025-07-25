@@ -13,7 +13,7 @@ export const generateRandomPassword = (): string => {
   const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const lowercase = "abcdefghijklmnopqrstuvwxyz";
   const numbers = "0123456789";
-  const symbols = "!@#$%^&*_+?-=";
+  const symbols = "!@#$%^&*_+?-~=";
   const allChars = uppercase + lowercase + numbers + symbols;
   let password = "";
 
