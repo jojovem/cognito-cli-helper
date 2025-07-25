@@ -5,13 +5,13 @@
   "description": "A CLI to easily test AWS Cognito user functionalities.",
   "license": "MIT",
   "author": "Gustavo Andrade Ferreira",
-  "homepage": "https://github.com/jojovembh/cognito-cli-helper#readme",
+  "homepage": "https://github.com/jojovem/cognito-cli-helper#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jojovembh/cognito-cli-helper.git"
+    "url": "https://github.com/jojovem/cognito-cli-helper.git"
   },
   "bugs": {
-    "url": "https://github.com/jojovembh/cognito-cli-helper/issues"
+    "url": "https://github.com/jojovem/cognito-cli-helper/issues"
   },
   "main": "dist/cli.js",
   "bin": {
