@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/jojovem/cognito-cli-helper/compare/v1.0.0...v1.1.0) (2025-07-25)
+
+
+### Features
+
+* **hash:** adds ~ special char to password generation ([011eec7](https://github.com/jojovem/cognito-cli-helper/commit/011eec700a55e63b7ddfc5a7b14ad277fee6af1f))
+
 # 1.0.0 (2025-07-25)
 
 
