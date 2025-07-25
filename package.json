@@ -1,5 +1,8 @@
 {
   "name": "@jojovembh/cognito-cli-helper",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.0.0",
   "type": "module",
   "description": "A CLI to easily test AWS Cognito user functionalities.",
