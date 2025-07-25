@@ -18,6 +18,27 @@
     [
       "@semantic-release/changelog",
       {
+        "preset": "conventionalcommits",
+        "presetConfig":  {
+          "types": [
+            {
+              "type":    "feat",
+              "section": "Features"
+            },
+            {
+              "type":    "fix",
+              "section": "Bug Fixes"
+            },
+            {
+              "type":    "docs",
+              "section": "Documentation"
+            },
+            {
+              "type":    "chore",
+              "section": "Chores"
+            }
+          ]
+        },
         "changelogFile": "CHANGELOG.md"
       }
     ],
