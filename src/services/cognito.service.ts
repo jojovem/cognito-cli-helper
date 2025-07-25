@@ -167,7 +167,6 @@ export class CognitoService {
       })
     );
 
-    // auto-verify email
     await this.cognitoClient.send(
       new AdminUpdateUserAttributesCommand({
         UserPoolId: this.userPoolId,

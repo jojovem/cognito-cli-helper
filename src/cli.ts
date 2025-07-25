@@ -59,7 +59,6 @@ program
 .description('Create a new Cognito user. A temporary password can be provided, otherwise one will be generated.')
 .action(async (email: string, temporaryPassword?: string) => {
   try {
-    // Instantiate service inside the action to ensure config is loaded
     const cognitoService = await createService();
     console.log(`Creating user "${email}"...`);
     await cognitoService.adminCreateUser(email, temporaryPassword);

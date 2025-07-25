@@ -24,7 +24,6 @@ export class ConfigService {
       const data = await fs.readFile(this.configPath, 'utf-8');
       return JSON.parse(data) as AppConfig;
     } catch (error) {
-      // If the file doesn't exist or is invalid, return null
       return null;
     }
   }
