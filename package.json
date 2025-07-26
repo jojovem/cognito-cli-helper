@@ -25,12 +25,14 @@
   ],
   "scripts": {
     "build": "tsc",
+    "clean": "rm -rf dist && rm -f tsconfig.tsbuildinfo",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "semantic-release": "semantic-release",
     "start": "node dist/cli.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts",
-    "release": "semantic-release",
+    "prepublishOnly": "npm run test && tsc --noEmit",
+    "release": "prepublishOnly && npm run clean && npm run build && semantic-release",
     "commit": "cz",
     "prepare": "husky || true"
   },
