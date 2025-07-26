@@ -5,13 +5,13 @@ import {
   CognitoIdentityProviderClient,
   GlobalSignOutCommand,
   InitiateAuthCommand,
-  RespondToAuthChallengeCommand
+  RespondToAuthChallengeCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import {beforeEach, describe, expect, it, jest} from '@jest/globals';
-import {mockClient} from 'aws-sdk-client-mock';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { mockClient } from 'aws-sdk-client-mock';
 
-import {CognitoService} from './cognito.service.js';
-import {AppConfig, ConfigService} from './config.service.js';
+import { CognitoService } from './cognito.service.js';
+import { AppConfig, ConfigService } from './config.service.js';
 
 jest.mock('cognito-srp-helper');
 
@@ -23,12 +23,10 @@ describe('CognitoService', () => {
     cognitoMock.resetHistory();
     jest.clearAllMocks();
 
-    jest
-    .spyOn(ConfigService.prototype, 'readConfig')
-    .mockResolvedValue({
+    jest.spyOn(ConfigService.prototype, 'readConfig').mockResolvedValue({
       region: 'eu-west-1',
       userPoolId: 'pool-id',
-      clientId: 'client-id'
+      clientId: 'client-id',
     } as AppConfig);
   });
 
@@ -61,9 +59,7 @@ describe('CognitoService', () => {
   });
 
   it('login returns tokens without SRP when AuthenticationResult is present', async () => {
-    cognitoMock
-    .on(InitiateAuthCommand)
-    .resolves({AuthenticationResult: {AccessToken: 'tok'}});
+    cognitoMock.on(InitiateAuthCommand).resolves({ AuthenticationResult: { AccessToken: 'tok' } });
 
     const svc = await CognitoService.create();
     const resp = await svc.login('me@example.com', 'Passw0rd!');
@@ -74,8 +70,8 @@ describe('CognitoService', () => {
 
   it('respondToNewPassword performs one challenge + one attribute update', async () => {
     cognitoMock
-    .on(RespondToAuthChallengeCommand)
-    .resolves({AuthenticationResult: {AccessToken: 'at'}});
+      .on(RespondToAuthChallengeCommand)
+      .resolves({ AuthenticationResult: { AccessToken: 'at' } });
     cognitoMock.on(AdminUpdateUserAttributesCommand).resolves({});
 
     const svc = await CognitoService.create();

@@ -1,5 +1,5 @@
 import { describe, it, expect } from '@jest/globals';
-import {generateRandomPassword} from './utils.js';
+import { generateRandomPassword } from './utils.js';
 
 describe('generateRandomPassword', () => {
   it('returns a 12‑character password meeting complexity rules', () => {

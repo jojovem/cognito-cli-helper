@@ -10,12 +10,12 @@
  */
 export const generateRandomPassword = (): string => {
   const length = 12;
-  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const lowercase = "abcdefghijklmnopqrstuvwxyz";
-  const numbers = "0123456789";
-  const symbols = "!@#$%^&*_+?-~=";
+  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const symbols = '!@#$%^&*_+?-~=';
   const allChars = uppercase + lowercase + numbers + symbols;
-  let password = "";
+  let password = '';
 
   password += uppercase[Math.floor(Math.random() * uppercase.length)];
   password += lowercase[Math.floor(Math.random() * lowercase.length)];
@@ -27,7 +27,7 @@ export const generateRandomPassword = (): string => {
   }
 
   return password
-  .split("")
-  .sort(() => 0.5 - Math.random())
-  .join("");
+    .split('')
+    .sort(() => 0.5 - Math.random())
+    .join('');
 };

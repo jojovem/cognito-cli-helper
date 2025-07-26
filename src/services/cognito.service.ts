@@ -12,14 +12,19 @@ import {
   GlobalSignOutCommandOutput,
   InitiateAuthCommand,
   InitiateAuthCommandOutput,
-  RespondToAuthChallengeCommand
+  RespondToAuthChallengeCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import {AuthenticationResultType} from '@aws-sdk/client-cognito-identity-provider/dist-types/models/models_0.js';
-import {fromIni} from '@aws-sdk/credential-providers';
-import {AwsCredentialIdentityProvider} from '@aws-sdk/types';
-import {createSrpSession, signSrpSession, wrapAuthChallenge, wrapInitiateAuth} from 'cognito-srp-helper';
-import {generateRandomPassword} from '../utils.js';
-import {ConfigService} from './config.service.js';
+import { AuthenticationResultType } from '@aws-sdk/client-cognito-identity-provider/dist-types/models/models_0.js';
+import { fromIni } from '@aws-sdk/credential-providers';
+import { AwsCredentialIdentityProvider } from '@aws-sdk/types';
+import {
+  createSrpSession,
+  signSrpSession,
+  wrapAuthChallenge,
+  wrapInitiateAuth,
+} from 'cognito-srp-helper';
+import { generateRandomPassword } from '../utils.js';
+import { ConfigService } from './config.service.js';
 
 /**
  * Wrapper around AWS Cognito identity flows.
@@ -55,12 +60,12 @@ export class CognitoService {
     let credentialsProvider: AwsCredentialIdentityProvider | undefined;
 
     if (config.awsProfile && config.awsProfile !== 'default') {
-      credentialsProvider = fromIni({profile: config.awsProfile});
+      credentialsProvider = fromIni({ profile: config.awsProfile });
     }
 
     this.cognitoClient = new CognitoIdentityProviderClient({
       region: config.region,
-      credentials: credentialsProvider
+      credentials: credentialsProvider,
     });
 
     this.clientId = config.clientId;
@@ -74,7 +79,6 @@ export class CognitoService {
     email: string,
     temporaryPassword?: string
   ): Promise<AdminCreateUserCommandOutput> {
-
     if (temporaryPassword == undefined) {
       temporaryPassword = generateRandomPassword();
       console.log(`Generated temporary password: ${temporaryPassword}`);
@@ -86,7 +90,7 @@ export class CognitoService {
         Username: email,
         TemporaryPassword: temporaryPassword,
         DesiredDeliveryMediums: [DeliveryMediumType.EMAIL],
-        UserAttributes: [{Name: 'email', Value: email}]
+        UserAttributes: [{ Name: 'email', Value: email }],
       })
     );
   }
@@ -94,13 +98,11 @@ export class CognitoService {
   /**
    * Deletes a user by email via admin API.
    */
-  async deleteUser(
-    email: string
-  ): Promise<AdminDeleteUserCommandOutput> {
+  async deleteUser(email: string): Promise<AdminDeleteUserCommandOutput> {
     return this.cognitoClient.send(
       new AdminDeleteUserCommand({
         UserPoolId: this.userPoolId,
-        Username: email
+        Username: email,
       })
     );
   }
@@ -108,40 +110,25 @@ export class CognitoService {
   /**
    * Performs SRP auth and handles PASSWORD_VERIFIER challenge.
    */
-  async login(
-    email: string,
-    password: string
-  ): Promise<InitiateAuthCommandOutput> {
+  async login(email: string, password: string): Promise<InitiateAuthCommandOutput> {
     // initialize SRP
-    const srpSession = createSrpSession(
-      email,
-      password,
-      this.userPoolId!,
-      false
-    );
+    const srpSession = createSrpSession(email, password, this.userPoolId!, false);
     const initParams = wrapInitiateAuth(srpSession, {
       ClientId: this.clientId,
       AuthFlow: AuthFlowType.USER_SRP_AUTH,
-      AuthParameters: {USERNAME: email}
+      AuthParameters: { USERNAME: email },
     });
 
-    const initResp = await this.cognitoClient.send(
-      new InitiateAuthCommand(initParams)
-    );
+    const initResp = await this.cognitoClient.send(new InitiateAuthCommand(initParams));
 
     // if we get PASSWORD_VERIFIER challenge, respond
     if (initResp.ChallengeName === ChallengeNameType.PASSWORD_VERIFIER) {
-      const challengeParams = wrapAuthChallenge(
-        signSrpSession(srpSession, initResp),
-        {
-          ClientId: this.clientId,
-          ChallengeName: ChallengeNameType.PASSWORD_VERIFIER,
-          ChallengeResponses: {USERNAME: email}
-        }
-      );
-      return this.cognitoClient.send(
-        new RespondToAuthChallengeCommand(challengeParams)
-      );
+      const challengeParams = wrapAuthChallenge(signSrpSession(srpSession, initResp), {
+        ClientId: this.clientId,
+        ChallengeName: ChallengeNameType.PASSWORD_VERIFIER,
+        ChallengeResponses: { USERNAME: email },
+      });
+      return this.cognitoClient.send(new RespondToAuthChallengeCommand(challengeParams));
     }
 
     return initResp;
@@ -162,8 +149,8 @@ export class CognitoService {
         Session: session,
         ChallengeResponses: {
           USERNAME: email,
-          NEW_PASSWORD: newPassword
-        }
+          NEW_PASSWORD: newPassword,
+        },
       })
     );
 
@@ -171,7 +158,7 @@ export class CognitoService {
       new AdminUpdateUserAttributesCommand({
         UserPoolId: this.userPoolId,
         Username: email,
-        UserAttributes: [{Name: 'email_verified', Value: 'true'}]
+        UserAttributes: [{ Name: 'email_verified', Value: 'true' }],
       })
     );
 
@@ -181,12 +168,10 @@ export class CognitoService {
   /**
    * Invalidates the accessToken, logging the user out globally.
    */
-  async logout(
-    accessToken: string
-  ): Promise<GlobalSignOutCommandOutput> {
+  async logout(accessToken: string): Promise<GlobalSignOutCommandOutput> {
     return this.cognitoClient.send(
       new GlobalSignOutCommand({
-        AccessToken: accessToken
+        AccessToken: accessToken,
       })
     );
   }

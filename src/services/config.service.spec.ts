@@ -11,7 +11,7 @@ const SAMPLE: AppConfig = {
   region: 'eu-west-1',
   userPoolId: 'pool‑id',
   clientId: 'client‑id',
-  awsProfile: 'default'
+  awsProfile: 'default',
 };
 
 describe('ConfigService', () => {

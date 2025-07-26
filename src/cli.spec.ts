@@ -1,14 +1,12 @@
-import {afterEach, beforeEach, describe, expect, it, jest} from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 let exitSpy: jest.SpyInstance;
 
 beforeEach(() => {
   jest.resetModules();
 
-  jest.spyOn(console, 'log').mockImplementation(() => {
-  });
-  jest.spyOn(console, 'error').mockImplementation(() => {
-  });
+  jest.spyOn(console, 'log').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
 
   exitSpy = jest.spyOn(process, 'exit').mockImplementation(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -26,18 +24,18 @@ const mockAnswers = {
   region: 'eu-west-1',
   userPoolId: 'pool‑id',
   clientId: 'client‑id',
-  awsProfile: 'default'
+  awsProfile: 'default',
 };
 jest.unstable_mockModule('inquirer', () => ({
   __esModule: true,
-  default: {prompt: jest.fn(() => Promise.resolve(mockAnswers))}
+  default: { prompt: jest.fn(() => Promise.resolve(mockAnswers)) },
 }));
 
 const saveConfig = jest.fn(() => Promise.resolve());
 
 jest.unstable_mockModule('./services/config.service.js', () => ({
   __esModule: true,
-  ConfigService: jest.fn().mockImplementation(() => ({saveConfig}))
+  ConfigService: jest.fn().mockImplementation(() => ({ saveConfig })),
 }));
 
 const adminCreateUser = jest.fn(() => Promise.resolve());
@@ -47,10 +45,10 @@ jest.unstable_mockModule('./services/cognito.service.js', () => ({
   CognitoService: {
     create: jest.fn(() =>
       Promise.resolve({
-        adminCreateUser
+        adminCreateUser,
       })
-    )
-  }
+    ),
+  },
 }));
 
 const tick = () => new Promise(process.nextTick);
@@ -65,19 +63,10 @@ describe('CLI commands', () => {
   });
 
   it('create-user → calls CognitoService.adminCreateUser', async () => {
-    process.argv = [
-      'node',
-      'cli.js',
-      'create-user',
-      'new@example.com',
-      'Temp123!'
-    ];
+    process.argv = ['node', 'cli.js', 'create-user', 'new@example.com', 'Temp123!'];
     await import('./cli.js');
     await tick();
 
-    expect(adminCreateUser).toHaveBeenCalledWith(
-      'new@example.com',
-      'Temp123!'
-    );
+    expect(adminCreateUser).toHaveBeenCalledWith('new@example.com', 'Temp123!');
   });
 });
