@@ -1,3 +1,10 @@
+## [1.1.8](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.7...v1.1.8) (2025-07-26)
+
+### Chores
+
+* restore and update release scripts for semantic-release ([37092a5](https://github.com/jojovem/cognito-cli-helper/commit/37092a58de19e61c114e6b7a9b1b8fb88c3ee992))
+* update ignore rules for new build artifacts and npm publishing ([d752785](https://github.com/jojovem/cognito-cli-helper/commit/d752785e616132e171756f4c41930f4eb3403b89))
+
 ## [1.1.7](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.6...v1.1.7) (2025-07-26)
 
 ### Chores
