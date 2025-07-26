@@ -34,7 +34,9 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts --maxWorkers=4",
     "test:watch": "npm test -- --watch --onlyChanged",
     "size": "bundlesize",
-    "prepublishOnly": "npm run test && npm run size"
+    "prepublishOnly": "npm run test && npm run size",
+    "semantic-release": "semantic-release",
+    "release": "npm run prepublishOnly && npm run clean && npm run build:prod && semantic-release --no-ci"
   },
   "types": "dist/cli.d.ts",
   "dependencies": {
