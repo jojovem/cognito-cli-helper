@@ -32,7 +32,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts",
     "release": "semantic-release",
     "commit": "cz",
-    "prepare": "husky install"
+    "prepare": "husky || true"
   },
   "types": "dist/cli.d.ts",
   "dependencies": {
