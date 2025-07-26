@@ -32,7 +32,7 @@
     "start": "node dist/cli.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts",
     "prepublishOnly": "npm run test && tsc --noEmit",
-    "release": "prepublishOnly && npm run clean && npm run build && semantic-release",
+    "release": "npm run prepublishOnly && npm run clean && npm run build && semantic-release",
     "commit": "cz",
     "prepare": "husky || true"
   },
