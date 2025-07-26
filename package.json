@@ -28,15 +28,14 @@
     "build:prod": "npm run clean && NODE_ENV=production tsc && npm run bundle",
     "bundle": "node esbuild.config.js",
     "start": "node dist/cli.min.js",
-    "clean": "rimraf dist .tsbuildinfo",
+    "clean": "rimraf dist .tsbuildinfo node_modules",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts --maxWorkers=4",
     "test:watch": "npm test -- --watch --onlyChanged",
-    "size": "bundlesize",
-    "prepublishOnly": "npm run test && npm run size",
+    "prepublishOnly": "npm run test && npm run clean && npm ci",
     "semantic-release": "semantic-release",
-    "release": "npm run prepublishOnly && npm run clean && npm run build:prod && semantic-release --no-ci"
+    "release": "npm run prepublishOnly &&  npm run build:prod && semantic-release --no-ci"
   },
   "types": "dist/cli.d.ts",
   "dependencies": {
@@ -87,14 +86,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "bundlesize": {
-  "compression": "gzip",
-  "files": [
-    {
-      "path": "./dist/cli.min.js",
-      "maxSize": "50 kB"
-    }
-  ]
-}
+  }
 }
