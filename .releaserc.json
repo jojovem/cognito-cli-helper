@@ -1,56 +1,38 @@
 {
-  "branches": [
-    "main"
-  ],
-  "plugins":  [
+  "branches": ["main"],
+  "plugins": [
     [
       "@semantic-release/commit-analyzer",
       {
+        "preset": "conventionalcommits",
         "releaseRules": [
-          {"type": "feat", "release": "minor"},
-          {"type": "fix", "release": "patch"},
-          {"type": "docs", "release": "patch"},
-          {"type": "chore", "release": "patch"}     
+          { "type": "feat",  "release": "minor" },
+          { "type": "fix",   "release": "patch" },
+          { "type": "docs",  "release": "patch" },
+          { "type": "chore", "release": "patch" }
         ]
       }
     ],
-    "@semantic-release/release-notes-generator",
     [
-      "@semantic-release/changelog",
+      "@semantic-release/release-notes-generator",
       {
         "preset": "conventionalcommits",
-        "presetConfig":  {
+        "presetConfig": {
           "types": [
-            {"type": "feat", "section": "Features", "hidden": false},
-            {"type": "fix", "section": "Bug Fixes", "hidden": false},
-            {"type": "docs", "section": "Documentation", "hidden": false},
-            {"type": "chore", "section": "Chores", "hidden": false},
-            {"type": "style", "section": "Styles", "hidden": false},
-            {"type": "refactor", "section": "Code Refactoring", "hidden": false},
-            {"type": "perf", "section": "Performance Improvements", "hidden": false},
-            {"type": "test", "section": "Tests", "hidden": false}
+            { "type": "feat",  "section": "Features",          "hidden": false },
+            { "type": "fix",   "section": "Bug Fixes",         "hidden": false },
+            { "type": "docs",  "section": "Documentation",     "hidden": false },
+            { "type": "chore", "section": "Chores",            "hidden": false },
+            { "type": "style", "section": "Styles",            "hidden": false },
+            { "type": "refactor", "section": "Code Refactoring", "hidden": false },
+            { "type": "perf", "section": "Performance Improvements", "hidden": false }
           ]
-        },
-        "changelogFile": "CHANGELOG.md"
+        }
       }
     ],
-    [
-      "@semantic-release/npm",
-      {
-        "pkgRoot":    ".",
-        "tarballDir": "release"
-      }
-    ],
-    [
-      "@semantic-release/git",
-      {
-        "assets":  [
-          "CHANGELOG.md",
-          "package.json"
-        ],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-      }
-    ],
-    "@semantic-release/github"
+    ["@semantic-release/changelog", { "changelogFile": "CHANGELOG.md" }],
+    ["@semantic-release/git",       { "assets": ["CHANGELOG.md","package.json"] }],
+    "@semantic-release/github",
+    "@semantic-release/npm"
   ]
 }
