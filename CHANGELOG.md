@@ -1,3 +1,11 @@
+## [1.1.5](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.4...v1.1.5) (2025-07-26)
+
+### Chores
+
+* adds .env to gitignore ([677d95c](https://github.com/jojovem/cognito-cli-helper/commit/677d95cf5defe97739e040663bb7a1b86478cbba))
+* **release:** fixes release docs generator ([ae3faee](https://github.com/jojovem/cognito-cli-helper/commit/ae3faee4a45442ce4ed56df646443935d803fd98))
+* version bump 1.1.4 ([405e94c](https://github.com/jojovem/cognito-cli-helper/commit/405e94c8ffa2de802af3447953986315ba483cfd))
+
 ## [1.1.4](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.3...v1.1.4) (2025-07-26)
 
 ## [1.1.3](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.2...v1.1.3) (2025-07-26)
