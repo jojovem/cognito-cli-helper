@@ -44,7 +44,6 @@
     "inquirer": "^12.8.2"
   },
   "devDependencies": {
-    "@aws-sdk/types": "^3.840.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@semantic-release/changelog": "^6.0.3",
