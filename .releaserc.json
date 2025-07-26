@@ -9,7 +9,8 @@
           { "type": "feat",  "release": "minor" },
           { "type": "fix",   "release": "patch" },
           { "type": "docs",  "release": "patch" },
-          { "type": "chore", "release": "patch" }
+          { "type": "chore", "release": "patch" },
+          { "type": "build", "release": "patch" }
         ]
       }
     ],
@@ -23,6 +24,7 @@
             { "type": "fix",   "section": "Bug Fixes",         "hidden": false },
             { "type": "docs",  "section": "Documentation",     "hidden": false },
             { "type": "chore", "section": "Chores",            "hidden": false },
+            { "type": "build", "section": "Build",            "hidden": false },
             { "type": "style", "section": "Styles",            "hidden": false },
             { "type": "refactor", "section": "Code Refactoring", "hidden": false },
             { "type": "perf", "section": "Performance Improvements", "hidden": false }
