@@ -10,7 +10,15 @@
           {
             "type":    "docs",
             "release": "patch"
-          }
+          },
+          {
+            "type":    "chore",
+            "release": "patch"
+          },
+          {
+            "type":    "fix",
+            "release": "patch"
+          }             
         ]
       }
     ],
