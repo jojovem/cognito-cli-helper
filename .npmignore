@@ -1,0 +1,8 @@
+src/
+test/
+.github/
+.husky/
+.vscode/
+*.md
+*.log
+*.tsbuildinfo
