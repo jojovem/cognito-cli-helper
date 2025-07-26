@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.2...v1.1.3) (2025-07-26)
+
+
+### Bug Fixes
+
+* **package.json:** fixes the release script ([dbafb1c](https://github.com/jojovem/cognito-cli-helper/commit/dbafb1c8edbbf97234bb440d8457664cd77c0751))
+
 ## [1.1.2](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.1...v1.1.2) (2025-07-25)
 
 ## [1.1.1](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.0...v1.1.1) (2025-07-25)
