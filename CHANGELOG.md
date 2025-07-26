@@ -1,3 +1,10 @@
+## [1.1.7](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.6...v1.1.7) (2025-07-26)
+
+### Chores
+
+* **bump:** 1.1.6 ([198492e](https://github.com/jojovem/cognito-cli-helper/commit/198492e668fc4bbe1287017504949edbd09e5318))
+* **release:** changes order to commit npm version update ([3b08a79](https://github.com/jojovem/cognito-cli-helper/commit/3b08a79d938756b07a1283709162a49ce2ed1bf0))
+
 ## [1.1.6](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.5...v1.1.6) (2025-07-26)
 
 ### Chores
