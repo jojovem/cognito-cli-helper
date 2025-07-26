@@ -28,14 +28,14 @@
     "build:prod": "npm run clean && NODE_ENV=production tsc && npm run bundle",
     "bundle": "node esbuild.config.js",
     "start": "node dist/cli.min.js",
-    "clean": "rimraf dist .tsbuildinfo node_modules",
+    "clean": "rm -rf dist .tsbuildinfo node_modules",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts --maxWorkers=4",
     "test:watch": "npm test -- --watch --onlyChanged",
-    "prepublishOnly": "npm run test && npm run clean && npm ci",
+    "prepublishOnly": "npm run clean && npm ci &&npm run test",
     "semantic-release": "semantic-release",
-    "release": "npm run prepublishOnly &&  npm run build:prod && semantic-release --no-ci"
+    "release": "npm run prepublishOnly && npm run build:prod && semantic-release --no-ci"
   },
   "types": "dist/cli.d.ts",
   "dependencies": {
@@ -71,7 +71,6 @@
     "jest": "^30.0.5",
     "mock-fs": "^5.5.0",
     "prettier": "^3.6.2",
-    "rimraf": "^6.0.1",
     "semantic-release": "^24.2.7",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
