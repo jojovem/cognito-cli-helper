@@ -25,16 +25,16 @@
   ],
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf dist && rm -f tsconfig.tsbuildinfo",
+    "build:prod": "npm run clean && NODE_ENV=production tsc && npm run bundle",
+    "bundle": "node esbuild.config.js",
+    "start": "node dist/cli.min.js",
+    "clean": "rimraf dist .tsbuildinfo",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
-    "semantic-release": "semantic-release",
-    "start": "node dist/cli.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts",
-    "prepublishOnly": "npm run test && tsc --noEmit",
-    "release": "npm run prepublishOnly && npm run clean && npm run build && semantic-release --no-ci",
-    "commit": "cz",
-    "prepare": "husky || true"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts --maxWorkers=4",
+    "test:watch": "npm test -- --watch --onlyChanged",
+    "size": "bundlesize",
+    "prepublishOnly": "npm run test && npm run size"
   },
   "types": "dist/cli.d.ts",
   "dependencies": {
@@ -54,6 +54,8 @@
     "@semantic-release/github": "^11.0.3",
     "@semantic-release/npm": "^12.0.2",
     "@semantic-release/release-notes-generator": "^14.0.3",
+    "@swc/core": "^1.13.2",
+    "@swc/helpers": "^0.5.17",
     "@types/inquirer": "^9.0.8",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.16.5",
@@ -63,10 +65,12 @@
     "commitizen": "^4.3.1",
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "cz-conventional-changelog": "^3.3.0",
+    "esbuild": "^0.25.8",
     "husky": "^9.1.7",
     "jest": "^30.0.5",
     "mock-fs": "^5.5.0",
     "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
     "semantic-release": "^24.2.7",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
@@ -81,5 +85,14 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "bundlesize": {
+  "compression": "gzip",
+  "files": [
+    {
+      "path": "./dist/cli.min.js",
+      "maxSize": "50 kB"
+    }
+  ]
+}
 }
