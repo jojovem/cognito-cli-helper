@@ -1,8 +1,10 @@
 src/
-test/
-.github/
-.husky/
-.vscode/
-*.md
-*.log
-*.tsbuildinfo
+*.ts
+!*.d.ts
+tsconfig.json
+esbuild.config.js
+coverage/
+__tests__/
+jest.config.*
+*.test.*
+*.spec.*
