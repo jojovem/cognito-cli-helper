@@ -1,3 +1,15 @@
+## [1.1.9](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.8...v1.1.9) (2025-07-27)
+
+### Chores
+
+* migrate configuration files to ESM ([05547ec](https://github.com/jojovem/cognito-cli-helper/commit/05547ec1860f668b289180c81ed58de1a0d6a366))
+* update version management ([f041e38](https://github.com/jojovem/cognito-cli-helper/commit/f041e384d9b0921272fbf3e748897bd24f8bc005))
+
+### Build
+
+* adds build to changelog semantic-release generator ([3f881bb](https://github.com/jojovem/cognito-cli-helper/commit/3f881bb4120ce0a79f2918985a2fc4d59fefe12a))
+* update build system configuration ([7453897](https://github.com/jojovem/cognito-cli-helper/commit/745389712eba3326493a92a02e53b7902bfec642))
+
 ## [1.1.8](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.7...v1.1.8) (2025-07-26)
 
 ### Chores
