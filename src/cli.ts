@@ -15,7 +15,7 @@ const program = new Command();
 program
   .name('cognito-cli')
   .description('A CLI to easily test AWS Cognito user functionalities.')
-  .version('1.0.0');
+  .version(require('../package.json').version);
 
 program
   .command('configure')
