@@ -15,7 +15,8 @@
   "bugs": {
     "url": "https://github.com/jojovem/cognito-cli-helper/issues"
   },
-  "main": "dist/cli.cjs",
+  "type": "module",
+  "main": "dist/cli.min.js",
   "bin": {
     "cognito-cli": "dist/cli.min.js"
   },
@@ -23,13 +24,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run bundle",
-    "bundle": "node esbuild.config.mjs",
+    "dev": "tsx src/cli.ts",
+    "build": "node esbuild.config.mjs",
     "start": "node dist/cli.min.js",
     "clean": "rm -rf dist .tsbuildinfo node_modules",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.ts --maxWorkers=4",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "npm test -- --watch --onlyChanged",
     "prepublishOnly": "npm run clean && npm ci && npm run test && npm run build",
     "release": "semantic-release --no-ci"
@@ -71,6 +72,7 @@
     "semantic-release": "^24.2.7",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   },
   "keywords": [
