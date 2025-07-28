@@ -1,76 +1,89 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 const mockPrompt = jest.fn();
+const mockSaveConfig = jest.fn();
+const mockAdminCreateUser = jest.fn();
+const mockForceChangePassword = jest.fn();
+
 jest.unstable_mockModule('inquirer', () => ({
-  default: {
-    prompt: mockPrompt,
-  },
+  default: { prompt: mockPrompt }
 }));
 
-const mockSaveConfig = jest.fn();
 jest.unstable_mockModule('./services/config.service.js', () => ({
   ConfigService: jest.fn().mockImplementation(() => ({
     saveConfig: mockSaveConfig,
-  })),
+    readConfig: jest.fn().mockResolvedValue({
+      region: 'us-east-1',
+      userPoolId: 'test-pool',
+      clientId: 'test-client',
+      awsProfile: 'default'
+    })
+  }))
 }));
 
-const mockAdminCreateUser = jest.fn();
 jest.unstable_mockModule('./services/cognito.service.js', () => ({
   CognitoService: {
     create: jest.fn().mockResolvedValue({
       adminCreateUser: mockAdminCreateUser,
-    }),
-  },
+      forceChangePassword: mockForceChangePassword
+    })
+  }
 }));
 
-let exitSpy: jest.SpyInstance;
-let consoleLogSpy: jest.SpyInstance;
-let consoleErrorSpy: jest.SpyInstance;
-let originalArgv: string[];
+describe('CLI', () => {
+  let originalArgv: string[];
+  let originalExit: any;
+  let originalConsole: any;
 
-beforeEach(() => {
-  originalArgv = [...process.argv];
-  
-  jest.clearAllMocks();
-  jest.resetModules();
-  
-  consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-  consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-  
-  exitSpy = jest.spyOn(process, 'exit').mockImplementation(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (_code?: number) => undefined as never
-  );
-});
+  const loadCli = async () => {
+    jest.resetModules();
+    const modulePath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'cli.ts');
+    return import(modulePath);
+  };
 
-afterEach(() => {
-  process.argv = originalArgv;
-  
-  consoleLogSpy.mockRestore();
-  consoleErrorSpy.mockRestore();
-  exitSpy.mockRestore();
-});
+  const runCliCommand = async (args: string[]) => {
+    process.argv = ['node', 'cli.js', ...args];
+    await loadCli();
+    return;
+  };
 
-describe('CLI commands', () => {
-  it('configure → calls ConfigService.saveConfig with prompt answers', async () => {
-    const mockAnswers = {
-      region: 'eu-west-1',
-      userPoolId: 'pool‑id',
-      clientId: 'client‑id',
-      awsProfile: 'default',
-    };
+  beforeEach(() => {
+    originalArgv = [...process.argv];
     
-    mockPrompt.mockResolvedValueOnce(mockAnswers);
-    process.argv = ['node', 'cli.js', 'configure'];
-    const cliModule = await import('./cli.js?' + Date.now());
-    await new Promise(resolve => setTimeout(resolve, 50));
-    expect(mockSaveConfig).toHaveBeenCalledWith(mockAnswers);
+    originalExit = process.exit;
+    process.exit = jest.fn() as any;
+    
+    originalConsole = { ...console };
+    console.log = jest.fn();
+    console.error = jest.fn();
   });
 
-  it('create-user → calls CognitoService.adminCreateUser', async () => {
-    process.argv = ['node', 'cli.js', 'create-user', 'new@example.com', 'Temp123!'];
-    const cliModule = await import('./cli.js?' + Date.now());
-    await new Promise(resolve => setTimeout(resolve, 50));
-    expect(mockAdminCreateUser).toHaveBeenCalledWith('new@example.com', 'Temp123!');
+  afterEach(() => {
+    process.argv = originalArgv;
+    process.exit = originalExit;
+    jest.clearAllMocks();
+  });
+
+  describe('force-change-password command', () => {
+    it('should force password change for user with provided password', async () => {
+      mockForceChangePassword.mockResolvedValueOnce({});
+      
+      await runCliCommand(['force-change-password', 'test@example.com', 'NewPass123!']);
+      
+      expect(mockForceChangePassword).toHaveBeenCalledWith('test@example.com', 'NewPass123!');
+      expect(console.log).toHaveBeenCalledWith(expect.stringContaining('is now required to change password'));
+    });
+
+    it('should handle other errors', async () => {
+      const error = new Error('Some other error');
+      mockForceChangePassword.mockRejectedValueOnce(error);
+      
+      await runCliCommand(['force-change-password', 'test@example.com']);
+      
+      expect(console.error).toHaveBeenCalled();
+      expect(process.exit).toHaveBeenCalledWith(1);
+    });
   });
 });

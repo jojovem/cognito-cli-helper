@@ -3,6 +3,8 @@ import {
   AdminCreateUserCommandOutput,
   AdminDeleteUserCommand,
   AdminDeleteUserCommandOutput,
+  AdminSetUserPasswordCommand,
+  AdminSetUserPasswordCommandOutput,
   AdminUpdateUserAttributesCommand,
   AuthFlowType,
   ChallengeNameType,
@@ -172,6 +174,28 @@ export class CognitoService {
     return this.cognitoClient.send(
       new GlobalSignOutCommand({
         AccessToken: accessToken,
+      })
+    );
+  }
+
+  /**
+   * Forces a user to change their password on next login by setting a temporary password.
+   */
+  async forceChangePassword(
+    email: string,
+    temporaryPassword?: string
+  ): Promise<AdminSetUserPasswordCommandOutput> {
+    if (temporaryPassword == undefined) {
+      temporaryPassword = generateRandomPassword();
+      console.log(`Generated temporary password: ${temporaryPassword}`);
+    }
+
+    return this.cognitoClient.send(
+      new AdminSetUserPasswordCommand({
+        UserPoolId: this.userPoolId,
+        Username: email,
+        Password: temporaryPassword,
+        Permanent: false, // This forces the user to change password on next login
       })
     );
   }

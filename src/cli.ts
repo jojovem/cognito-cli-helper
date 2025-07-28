@@ -8,6 +8,7 @@ import { Command } from 'commander';
 import inquirer from 'inquirer';
 import { CognitoService } from './services/cognito.service.js';
 import { ConfigService } from './services/config.service.js';
+import pkg from '../package.json';
 
 const configService = new ConfigService();
 const program = new Command();
@@ -15,7 +16,7 @@ const program = new Command();
 program
   .name('cognito-cli')
   .description('A CLI to easily test AWS Cognito user functionalities.')
-  .version(require('../package.json').version);
+  .version(pkg.version);
 
 program
   .command('configure')
@@ -145,6 +146,27 @@ program
       process.exit(1);
     }
   });
+
+program
+  .command('force-change-password <email> [temporary-password]')
+  .description('Force a user to change their password on next login by setting a temporary password.')
+  .action(async (email: string, temporaryPassword?: string) => {
+    try {
+      const cognitoService = await createService();
+      console.log(`Setting user "${email}" to FORCE_CHANGE_PASSWORD status...`);
+      await cognitoService.forceChangePassword(email, temporaryPassword);
+      console.log(`✅ User "${email}" is now required to change password on next login.`);
+      console.log('The user will need to use the temporary password to log in and set a new permanent password.');
+    } catch (err: any) {
+      if (err instanceof UserNotFoundException) {
+        console.error(`❌ Error: User "${email}" not found.`);
+      } else {
+        console.error('❌ An unexpected error occurred while setting force change password:', err.message);
+      }
+      process.exit(1);
+    }
+  });
+
 program
   .command('invalidate-token <accessToken>')
   .description('Invalidates an accessToken.')
