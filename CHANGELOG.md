@@ -1,3 +1,21 @@
+## [1.2.0](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.8...v1.2.0) (2025-07-28)
+
+### Features
+
+* adds the force-change-password use case ([56e1cd3](https://github.com/jojovem/cognito-cli-helper/commit/56e1cd3fd319f42ea01ec18d92303b99ac89e734))
+
+### Chores
+
+* migrate configuration files to ESM ([05547ec](https://github.com/jojovem/cognito-cli-helper/commit/05547ec1860f668b289180c81ed58de1a0d6a366))
+* **release:** 1.1.9 [skip ci] ([18f02d7](https://github.com/jojovem/cognito-cli-helper/commit/18f02d78a1d85b02f9d6519ec32377eb2fa1e682))
+* update version management ([f041e38](https://github.com/jojovem/cognito-cli-helper/commit/f041e384d9b0921272fbf3e748897bd24f8bc005))
+
+### Build
+
+* adds build to changelog semantic-release generator ([3f881bb](https://github.com/jojovem/cognito-cli-helper/commit/3f881bb4120ce0a79f2918985a2fc4d59fefe12a))
+* update build system configuration ([7453897](https://github.com/jojovem/cognito-cli-helper/commit/745389712eba3326493a92a02e53b7902bfec642))
+* using ESM as default instead of commonJs ([311a8ee](https://github.com/jojovem/cognito-cli-helper/commit/311a8ee77914f4126ab66a293cfa1d0ae02170cf))
+
 ## [1.1.9](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.8...v1.1.9) (2025-07-27)
 
 ### Chores
