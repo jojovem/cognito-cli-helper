@@ -12,7 +12,7 @@ export interface AppConfig {
 }
 
 export class ConfigService {
-  private configPath = path.join(paths.config, 'config.json');
+  private readonly configPath = path.join(paths.config, 'config.json');
 
   async saveConfig(config: AppConfig): Promise<void> {
     await fs.mkdir(paths.config, { recursive: true });

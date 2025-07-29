@@ -8,7 +8,7 @@ const mockAdminCreateUser = jest.fn();
 const mockForceChangePassword = jest.fn();
 
 jest.unstable_mockModule('inquirer', () => ({
-  default: { prompt: mockPrompt }
+  default: { prompt: mockPrompt },
 }));
 
 jest.unstable_mockModule('./services/config.service.js', () => ({
@@ -18,18 +18,18 @@ jest.unstable_mockModule('./services/config.service.js', () => ({
       region: 'us-east-1',
       userPoolId: 'test-pool',
       clientId: 'test-client',
-      awsProfile: 'default'
-    })
-  }))
+      awsProfile: 'default',
+    }),
+  })),
 }));
 
 jest.unstable_mockModule('./services/cognito.service.js', () => ({
   CognitoService: {
     create: jest.fn().mockResolvedValue({
       adminCreateUser: mockAdminCreateUser,
-      forceChangePassword: mockForceChangePassword
-    })
-  }
+      forceChangePassword: mockForceChangePassword,
+    }),
+  },
 }));
 
 describe('CLI', () => {
@@ -51,10 +51,10 @@ describe('CLI', () => {
 
   beforeEach(() => {
     originalArgv = [...process.argv];
-    
+
     originalExit = process.exit;
     process.exit = jest.fn() as any;
-    
+
     originalConsole = { ...console };
     console.log = jest.fn();
     console.error = jest.fn();
@@ -69,19 +69,21 @@ describe('CLI', () => {
   describe('force-change-password command', () => {
     it('should force password change for user with provided password', async () => {
       mockForceChangePassword.mockResolvedValueOnce({});
-      
+
       await runCliCommand(['force-change-password', 'test@example.com', 'NewPass123!']);
-      
+
       expect(mockForceChangePassword).toHaveBeenCalledWith('test@example.com', 'NewPass123!');
-      expect(console.log).toHaveBeenCalledWith(expect.stringContaining('is now required to change password'));
+      expect(console.log).toHaveBeenCalledWith(
+        expect.stringContaining('is now required to change password')
+      );
     });
 
     it('should handle other errors', async () => {
       const error = new Error('Some other error');
       mockForceChangePassword.mockRejectedValueOnce(error);
-      
+
       await runCliCommand(['force-change-password', 'test@example.com']);
-      
+
       expect(console.error).toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(1);
     });

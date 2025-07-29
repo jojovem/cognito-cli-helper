@@ -35,7 +35,7 @@ export class CognitoService {
   private cognitoClient!: CognitoIdentityProviderClient;
   private clientId?: string;
   private userPoolId?: string;
-  private configService = new ConfigService();
+  private readonly configService = new ConfigService();
 
   private constructor(configService: ConfigService) {
     this.configService = configService;
@@ -52,7 +52,7 @@ export class CognitoService {
    */
   private async initialize() {
     const config = await this.configService.readConfig();
-    if (!config || !config.region) {
+    if (!config?.region) {
       console.error(
         'Configuration is missing or incomplete. Please run "cognito-cli configure" and provide a valid AWS Region.'
       );
