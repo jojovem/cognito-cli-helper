@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A CLI to easily test AWS Cognito user functionalities.",
   "license": "MIT",
   "author": "Gustavo Andrade Ferreira",

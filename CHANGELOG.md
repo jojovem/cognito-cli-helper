@@ -1,3 +1,13 @@
+## [1.2.1](https://github.com/jojovem/cognito-cli-helper/compare/v1.2.0...v1.2.1) (2025-08-04)
+
+### Build
+
+* **releaserc:** changing release rc configuration ([0bbb960](https://github.com/jojovem/cognito-cli-helper/commit/0bbb960b6b0e387e7e3dda5f753ae68b7bb4b027))
+
+### Code Refactoring
+
+* minor refactor improvements ([6e99aee](https://github.com/jojovem/cognito-cli-helper/commit/6e99aeee81ad39aee1c45dc0ce12ef540195403f))
+
 ## [1.2.0](https://github.com/jojovem/cognito-cli-helper/compare/v1.1.8...v1.2.0) (2025-07-28)
 
 ### Features
