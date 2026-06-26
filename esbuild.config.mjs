@@ -7,7 +7,7 @@ async function build() {
     minify: true,
     format: 'esm',
     platform: 'node',
-    target: ['node18'],
+    target: ['node24'],
     outfile: 'dist/cli.min.js',
     sourcemap: false,
     external: [
