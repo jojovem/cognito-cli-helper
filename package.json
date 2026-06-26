@@ -10,7 +10,7 @@
   "homepage": "https://github.com/jojovem/cognito-cli-helper#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jojovem/cognito-cli-helper.git"
+    "url": "git+https://github.com/jojovem/cognito-cli-helper.git"
   },
   "bugs": {
     "url": "https://github.com/jojovem/cognito-cli-helper/issues"
