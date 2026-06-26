@@ -1,3 +1,9 @@
+## [1.2.2](https://github.com/jojovem/cognito-cli-helper/compare/v1.2.1...v1.2.2) (2026-06-26)
+
+### Chores
+
+* update dependencies ([ba6d2e5](https://github.com/jojovem/cognito-cli-helper/commit/ba6d2e5f2baa371b459a81061a6233c9efa5196c))
+
 ## [1.2.1](https://github.com/jojovem/cognito-cli-helper/compare/v1.2.0...v1.2.1) (2025-08-04)
 
 ### Build
