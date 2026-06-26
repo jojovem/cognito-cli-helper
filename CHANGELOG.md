@@ -1,3 +1,9 @@
+## [1.2.3](https://github.com/jojovem/cognito-cli-helper/compare/v1.2.2...v1.2.3) (2026-06-26)
+
+### Chores
+
+* fix repository url in package.json ([36a6969](https://github.com/jojovem/cognito-cli-helper/commit/36a6969e805e1457f3e915cd7ef4f29eb12a413a))
+
 ## [1.2.2](https://github.com/jojovem/cognito-cli-helper/compare/v1.2.1...v1.2.2) (2026-06-26)
 
 ### Chores
