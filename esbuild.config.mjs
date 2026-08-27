@@ -13,6 +13,7 @@ async function build() {
     external: [
       '@aws-sdk/client-cognito-identity-provider',
       '@aws-sdk/credential-providers',
+      'clipboardy',
       'commander',
       'cognito-srp-helper',
       'inquirer',
