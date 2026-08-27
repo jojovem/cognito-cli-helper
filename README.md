@@ -4,9 +4,10 @@
 
 ## Features
 
-- Configure AWS Cognito credentials (`configure`)
+- Configure AWS Cognito credentials, including a stored username/password (`configure`)
 - Create users with temporary passwords (`create-user`)
-- Login with SRP challenge support (`login`)
+- Login with SRP challenge support — email/password optional once stored (`login`)
+- Copy a user's `IdToken` straight to the clipboard (`get-id-token`)
 - Delete users (`delete-user`)
 - Logout / revoke access tokens (`invalidate-token`)
 
@@ -22,18 +23,28 @@
   cognito-cli configure
 ```
 
-Enter region, userPoolId, clientId, and optionally awsProfile.
+Enter region, userPoolId, clientId, optionally awsProfile, and a Cognito
+username (email) and password.
 
-The file will be created on:`~/.config/cognito-cli-helper/config.json`
+The non-secret config is written to `~/.config/cognito-cli-helper/config.json`,
+and the credentials are written as plain `KEY=value` lines to
+`~/.config/cognito-cli-helper/.env`. Once stored, `login` and `get-id-token` no
+longer need the email/password passed on the command line.
 
 ## Usage
 
 ```bash
   cognito-cli create-user user@example.com [temporaryPassword]
-  cognito-cli login user@example.com
+  cognito-cli login [user@example.com]
+  cognito-cli get-id-token [user@example.com] [password]
   cognito-cli delete-user user@example.com
   cognito-cli invalidate-token <accessToken>
 ```
+
+`get-id-token` runs the same login flow as `login`, copies the resulting
+`IdToken` to the system clipboard, and prints a confirmation. Command-line
+arguments override the values stored in `.env`; if no credentials are available
+from either source it prints usage guidance and exits non-zero.
 
 ## Contributing
 
