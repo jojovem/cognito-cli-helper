@@ -1,9 +1,11 @@
 import {
   AdminCreateUserCommand,
+  AdminCreateUserCommandInput,
   AdminDeleteUserCommand,
   AdminUpdateUserAttributesCommand,
   CognitoIdentityProviderClient,
   GlobalSignOutCommand,
+  GlobalSignOutCommandInput,
   InitiateAuthCommand,
   RespondToAuthChallengeCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -37,7 +39,7 @@ describe('CognitoService', () => {
     await svc.adminCreateUser('user@example.com');
 
     const call = cognitoMock.call(0);
-    expect(call.args[0].input.TemporaryPassword).toBeDefined();
+    expect((call.args[0].input as AdminCreateUserCommandInput).TemporaryPassword).toBeDefined();
   });
 
   it('adminCreateUser keeps an explicit temporaryPassword', async () => {
@@ -46,7 +48,9 @@ describe('CognitoService', () => {
     const svc = await CognitoService.create();
     await svc.adminCreateUser('foo@bar.com', 'Temp123!');
 
-    expect(cognitoMock.call(0).args[0].input.TemporaryPassword).toBe('Temp123!');
+    expect(
+      (cognitoMock.call(0).args[0].input as AdminCreateUserCommandInput).TemporaryPassword
+    ).toBe('Temp123!');
   });
 
   it('deleteUser sends exactly one AdminDeleteUserCommand', async () => {
@@ -55,7 +59,7 @@ describe('CognitoService', () => {
     const svc = await CognitoService.create();
     await svc.deleteUser('gone@now.com');
 
-    expect(cognitoMock.calls(AdminDeleteUserCommand).length).toBe(1);
+    expect(cognitoMock.commandCalls(AdminDeleteUserCommand).length).toBe(1);
   });
 
   it('login returns tokens without SRP when AuthenticationResult is present', async () => {
@@ -88,6 +92,8 @@ describe('CognitoService', () => {
     const svc = await CognitoService.create();
     await svc.logout('dummy');
 
-    expect(cognitoMock.call(0).args[0].input.AccessToken).toBe('dummy');
+    expect((cognitoMock.call(0).args[0].input as GlobalSignOutCommandInput).AccessToken).toBe(
+      'dummy'
+    );
   });
 });
