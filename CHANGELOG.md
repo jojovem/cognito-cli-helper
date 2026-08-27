@@ -1,3 +1,17 @@
+## [1.3.0](https://github.com/jojovem/cognito-cli-helper/compare/v1.2.3...v1.3.0) (2026-08-27)
+
+### Features
+
+* add get-id-token command and stored credentials ([1133b17](https://github.com/jojovem/cognito-cli-helper/commit/1133b175582a26440d0ecc5cd9a319a33aafeede))
+
+### Documentation
+
+* document get-id-token and stored credentials ([426774d](https://github.com/jojovem/cognito-cli-helper/commit/426774df5c01d0c1cbb70c9af0e7e19add2ab06c))
+
+### Chores
+
+* add claude and docs folder to gitginore ([17a240f](https://github.com/jojovem/cognito-cli-helper/commit/17a240f4196803e62297c37a47dac5e6c7b09098))
+
 ## [1.2.3](https://github.com/jojovem/cognito-cli-helper/compare/v1.2.2...v1.2.3) (2026-06-26)
 
 ### Chores
