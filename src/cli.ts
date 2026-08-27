@@ -4,8 +4,10 @@ import {
   UsernameExistsException,
   UserNotFoundException,
 } from '@aws-sdk/client-cognito-identity-provider';
+import clipboard from 'clipboardy';
 import { Command } from 'commander';
 import inquirer from 'inquirer';
+import { resolveCredentials, runLoginFlow } from './login-flow.js';
 import { CognitoService } from './services/cognito.service.js';
 import { ConfigService } from './services/config.service.js';
 import pkg from '../package.json';
@@ -46,8 +48,21 @@ program
         message: 'AWS Profile to use (leave blank for default):',
         default: 'default',
       },
+      {
+        type: 'input',
+        name: 'username',
+        message: 'Cognito username (email):',
+      },
+      {
+        type: 'password',
+        name: 'password',
+        message: 'Cognito password:',
+        mask: '*',
+      },
     ]);
-    await configService.saveConfig(answers);
+    const { username, password, ...config } = answers;
+    await configService.saveConfig(config);
+    await configService.saveCredentials({ username, password });
     console.log('✅ Configuration saved successfully!');
   });
 
@@ -78,45 +93,53 @@ program
   });
 
 program
-  .command('login <email>')
+  .command('login [email]')
   .description('Log in a Cognito user and retrieve authentication tokens.')
-  .action(async (email: string) => {
+  .action(async (email?: string) => {
     try {
+      const { email: resolvedEmail, password: envPassword } = await resolveCredentials(
+        configService,
+        email
+      );
+
+      if (!resolvedEmail) {
+        console.error(
+          '❌ No email provided. Run "cognito-cli configure" or pass the email: cognito-cli login <email>'
+        );
+        process.exit(1);
+        return;
+      }
+
       const cognitoService = await CognitoService.create();
-      const { password } = await inquirer.prompt([
-        {
-          type: 'password',
-          name: 'password',
-          message: 'Enter password:',
-          mask: '*',
-        },
-      ]);
 
-      console.log(`Attempting to log in as ${email}...`);
-      const response = await cognitoService.login(email, password.trim());
-
-      if (response.ChallengeName === 'NEW_PASSWORD_REQUIRED' && response.Session) {
-        console.log('A new password is required.');
-        const { newPassword } = await inquirer.prompt([
+      let password = envPassword;
+      if (!password) {
+        const answers = await inquirer.prompt([
           {
             type: 'password',
-            name: 'newPassword',
-            message: 'Enter new password:',
+            name: 'password',
+            message: 'Enter password:',
             mask: '*',
           },
         ]);
-        const challengeResponse = await cognitoService.respondToNewPassword(
-          email,
-          newPassword.trim(),
-          response.Session
-        );
+        password = answers.password;
+      }
+
+      console.log(`Attempting to log in as ${resolvedEmail}...`);
+      const { tokens, newPasswordSet } = await runLoginFlow(
+        cognitoService,
+        resolvedEmail,
+        password!
+      );
+
+      if (newPasswordSet) {
         console.log('✅ New password set successfully. You are now logged in.');
-        console.log('Tokens:', JSON.stringify(challengeResponse, null, 2));
-      } else if (response.AuthenticationResult) {
+        console.log('Tokens:', JSON.stringify(tokens, null, 2));
+      } else if (tokens) {
         console.log('✅ Login successful!');
-        console.log('Tokens:', JSON.stringify(response.AuthenticationResult, null, 2));
+        console.log('Tokens:', JSON.stringify(tokens, null, 2));
       } else {
-        console.error('❌ Login failed. Unexpected response:', response);
+        console.error('❌ Login failed. Unexpected response.');
         process.exit(1);
       }
     } catch (err: any) {
@@ -128,6 +151,48 @@ program
       process.exit(1);
     }
   });
+
+program
+  .command('get-id-token [email] [password]')
+  .description('Log in and copy the resulting IdToken to the system clipboard.')
+  .action(async (email?: string, password?: string) => {
+    const { email: resolvedEmail, password: resolvedPassword } = await resolveCredentials(
+      configService,
+      email,
+      password
+    );
+
+    if (!resolvedEmail || !resolvedPassword) {
+      console.error(
+        '❌ No credentials found. Pass the email and password: cognito-cli get-id-token <email> <password>'
+      );
+      process.exit(1);
+      return;
+    }
+
+    try {
+      const cognitoService = await CognitoService.create();
+      console.log(`Attempting to log in as ${resolvedEmail}...`);
+      const { tokens } = await runLoginFlow(cognitoService, resolvedEmail, resolvedPassword);
+
+      if (!tokens?.IdToken) {
+        console.error('❌ Login failed. No IdToken was returned.');
+        process.exit(1);
+        return;
+      }
+
+      await clipboard.write(tokens.IdToken);
+      console.log('✅ IdToken copied to clipboard.');
+    } catch (err: any) {
+      if (err instanceof NotAuthorizedException) {
+        console.error('❌ Login failed: Not authorized. Please check email and password.');
+      } else {
+        console.error('❌ An unexpected error occurred during login:', err.message);
+      }
+      process.exit(1);
+    }
+  });
+
 program
   .command('delete-user <email>')
   .description('Delete a Cognito user.')
